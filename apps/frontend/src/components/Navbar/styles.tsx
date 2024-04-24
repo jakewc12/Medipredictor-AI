@@ -6,7 +6,7 @@ export const StyledToolbar = styled(Toolbar)(() => ({
   display: 'flex',
 }));
 
-export const SGALogo = styled.div(() => ({
+export const Logo = styled.div(() => ({
   flexGrow: 1,
 }));
 

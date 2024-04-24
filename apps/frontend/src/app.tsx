@@ -15,6 +15,9 @@ const App: React.FC = () => {
 
       <Routes>
         <Route index element={<Home />} />
+        {/* <Route path="projects" element={<Projects />} /> */}
+        {/* <Route path="info" element={<Info />} />
+        <Route path="contact" element={<contact />} /> */}
         <Route path="*" element={<NotFound />} />
       </Routes>
     </MuiThemeProvider>
