@@ -2,16 +2,14 @@ import AppBar from '@mui/material/AppBar';
 import Button from '@mui/material/Button';
 import { NAVBAR_MENUS } from './constants';
 
-import { StyledAppBar, NavbarLink, Logo, StyledToolbar, Picture } from './styles';
+import { StyledAppBar, NavbarLink, Logo, StyledToolbar } from './styles';
 
 const Navbar: React.FC = () => {
   return (
-    // <a href="https://neudorms.com/">
     <StyledAppBar position="static" >
       <StyledToolbar>
-        {/* put profile picture in this logo */}
         <Logo>
-          Jacob Wu-Chen | Software Developer
+          Disease detector
         </Logo>
 
         {NAVBAR_MENUS.map((menu) => (
@@ -20,9 +18,7 @@ const Navbar: React.FC = () => {
           </Button>
         ))}
       </StyledToolbar>
-      {/* add picture that is hyperlinkable */}
     </StyledAppBar>
-    //  </a>
   );
 };
 

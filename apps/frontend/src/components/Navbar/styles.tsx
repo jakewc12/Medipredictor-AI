@@ -28,7 +28,7 @@ export const StyledAppBar = styled(AppBar)({
   backgroundRepeat: 'no-repeat',
   backgroundPosition: 'center', // Center the background image
   position: 'static',
-  borderRadius: '25px',
+  // borderRadius: '25px',
 });
 
 export const Picture = styled.div(()=>({

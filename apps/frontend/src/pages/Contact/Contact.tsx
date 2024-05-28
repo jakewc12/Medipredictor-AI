@@ -1,6 +1,6 @@
 const Contact: React.FC = () => {
     return (
-    <div> This is meee</div>
+    <div> contact us here</div>
     );
      
    };

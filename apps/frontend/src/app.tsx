@@ -6,36 +6,22 @@ import NotFound from './pages/NotFound';
 import Home from './pages/Home';
 import Contact from './pages/Contact/Contact';
 import Navbar from './components/Navbar';
-import { createTheme } from '@mui/material/styles';
-import { green, purple } from '@mui/material/colors';
-
+import { muiTheme } from './theme';
+import Heart from './pages/Heart';
+import Diabetes from './pages/Diabetes';
 const App: React.FC = () => {
-  const theme = createTheme({
-    palette: {
-      primary: {
-        main: purple[500],
-      },
-      secondary: {
-        main: green[500],
-      },
-      text: {
-        primary: green[500],
-        secondary: 'rgba(132, 146, 166, 1)',
-        disabled: 'rgba(60, 72, 88, 0.38)',
-      }
-    },
-  });
+  
   return (
-    <MuiThemeProvider theme={theme}>
+    <MuiThemeProvider theme={muiTheme}>
       <CssBaseline />
       <Navbar />
 
       <Routes>
         <Route index element={<Home />} />
-        {/* <Route path="projects" element={<Projects />} /> */}
-        {/* <Route path="info" element={<Info />} /> */}
         <Route path="contact" element={<Contact />} />
         <Route path="*" element={<NotFound />} />
+        <Route path="heart" element={<Heart />} />
+        <Route path="diabetes" element={<Diabetes />} />
       </Routes>
     </MuiThemeProvider>
   );
