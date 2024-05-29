@@ -17,7 +17,6 @@ export const MyTheme = createTheme({
   },
   typography: {
     //fontFamily: 'Fira Code, monospace', 
-    
   },
 });
 

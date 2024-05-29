@@ -65,4 +65,4 @@ def predict_using_model(data: list, create_model, neighbors = None) -> int:
 print(predict_using_model([1,42.0,0,0,4,33.64,4.8,145
 ], create_KNN_model, neighbors=7))
 print(predict_using_model([1,42.0,0,0,4,33.64,4.8,145
-], create_Bayes_model)
+], create_Bayes_model))
