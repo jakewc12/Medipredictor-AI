@@ -14,3 +14,8 @@ https://scikit-learn.org/stable/modules/generated/sklearn.svm.SVC.html
 
 # KNN (K nearest neighbor aka the model im most comfortable with)
 https://scikit-learn.org/stable/modules/generated/sklearn.neighbors.KNeighborsClassifier.html
+
+Running frontend and backend
+```
+npm run start
+```
