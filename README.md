@@ -3,6 +3,8 @@ A data science ML project that trains a neural network to identify bouldering cl
 
 Resources?:
 
+https://www.kaggle.com/datasets/iammustafatz/diabetes-prediction-dataset/data
+
 # Chi Squared Test(To determine feature importance)
 https://scikit-learn.org/stable/modules/generated/sklearn.feature_selection.chi2.html
 
