@@ -1,7 +1,12 @@
-import { TextField } from "@mui/material";
-import { useState } from 'react';
-import Button from "@mui/material/Button";
-
+import { FormQuestionContainer, FormTextContainer, FormRadioContainer, HomeContainer } from './styles';
+import { useState, useEffect } from 'react';
+//import { Radio } from '@mui/material';
+import Radio from '@mui/material/Radio';
+import RadioGroup from '@mui/material/RadioGroup';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import FormControl from '@mui/material/FormControl';
+import FormLabel from '@mui/material/FormLabel';
+import NumberInputBasic from './NumberInputForm';
 enum SmokingHistory {
     No_Info, 
     Never,
@@ -15,6 +20,7 @@ interface Props {
     setIsPopupOpen: (open: boolean) => void;
   }
 const DiabetesForm: React.FC<Props> = ({ setIsPopupOpen }) => {
+    
     const getData = (inputs: string ) => {
         fetch('http://localhost:5000/diabetes', {
             method: 'POST',
@@ -39,7 +45,10 @@ const DiabetesForm: React.FC<Props> = ({ setIsPopupOpen }) => {
         getData(thing)
     }
     const [gender, setGender] = useState('')
-    const [age, setAge] = useState('')
+    useEffect(() => {
+        console.log("Gender updated to:", gender);
+      }, [gender]);
+    const [age, setAge] = useState(0)
     const [hypertension, setHypertension] = useState(false)
     const [heartDisease, setHeartDisease] = useState(false)
     const [smokingHistory, setSmokingHistory] = useState<SmokingHistory>(SmokingHistory.No_Info)
@@ -49,22 +58,51 @@ const DiabetesForm: React.FC<Props> = ({ setIsPopupOpen }) => {
 
     const [thing, setThing] = useState('')
     const [test, setTest] = useState('hehe')
+
+    const handleAgeChange = (value:number | null) => {
+        if (value != null) {
+            setAge(value)
+        }
+    }
+    
     return (
-    <div>{BMI}
-        <br/>
-        {test}
-        <br/>
-        <TextField
-    required
-    //id="outlined-required"
-    label= 'required'
-    defaultValue="test"
-    onChange={e => {
-        setThing(e.target.value)
-    }}
-    />
-    <Button variant="contained" onClick={handleClick}>submit</Button>
-    </div>
+            <HomeContainer>
+                <FormQuestionContainer>
+                    <FormTextContainer>
+                    Welcome to the Diabetes Predictor Form
+                    </FormTextContainer>
+                </FormQuestionContainer>
+
+                <FormQuestionContainer>
+                    <FormRadioContainer>
+                        <FormControl>
+                            <FormLabel id="gender">Gender</FormLabel>
+                            <RadioGroup
+                                aria-labelledby="gender"
+                                name="gender"
+                                onChange= {
+                                    (e) => {
+                                        setGender(e.target.value)
+                                    }
+                                }
+                            >
+                                <FormControlLabel value="female" control={<Radio />} label="Female" />
+                                <FormControlLabel value="male" control={<Radio />} label="Male" />
+                            </RadioGroup>
+                        </FormControl>
+                    </FormRadioContainer>
+                </FormQuestionContainer>
+
+                <FormQuestionContainer>
+                    <FormTextContainer >
+                        <NumberInputBasic setNumber={setAge} number={age}></NumberInputBasic>
+                    </FormTextContainer>
+                </FormQuestionContainer>
+
+
+
+            </HomeContainer>
+    
     
 ) ; 
 
