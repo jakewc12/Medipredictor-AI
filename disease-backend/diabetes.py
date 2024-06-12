@@ -12,13 +12,16 @@ from sklearn.metrics import classification_report, accuracy_score, confusion_mat
 from sklearn.model_selection import train_test_split
 from sklearn.naive_bayes import GaussianNB
 
-df = pd.read_csv('diabetes.csv')
-df['gender'] = label_encoder.fit_transform(df['gender']) 
-df['smoking_history'] = label_encoder.fit_transform(df['smoking_history'])
-cat_df = df.drop(columns=['diabetes'])
-X = df.drop(columns=['diabetes'])
-y = df.diabetes
-X_train, X_test, y_train, y_test = train_test_split(X,y,test_size=0.3,random_state=42)
+
+def create_data_frame():
+    df = pd.read_csv('disease-backend/diabetes.csv')
+    df['gender'] = label_encoder.fit_transform(df['gender']) 
+    df['smoking_history'] = label_encoder.fit_transform(df['smoking_history'])
+    cat_df = df.drop(columns=['diabetes'])
+    X = df.drop(columns=['diabetes'])
+    y = df.diabetes
+    X_train, X_test, y_train, y_test = train_test_split(X,y,test_size=0.3,random_state=42)
+    return X_train, y_train
 
 def create_KNN_model(neighbors: int) -> KNeighborsClassifier:
     """
@@ -27,6 +30,7 @@ def create_KNN_model(neighbors: int) -> KNeighborsClassifier:
     Returns:
     KNeighborsClassifier: Produced model
     """
+    X_train, y_train = create_data_frame()
     knn = KNeighborsClassifier(n_neighbors = neighbors)
     knn.fit(X_train, y_train)
     return knn
@@ -38,6 +42,7 @@ def create_Bayes_model(*args) -> GaussianNB:
     Returns:
     GaussianNB: Produced model
     """
+    X_train, y_train = create_data_frame()
     model = GaussianNB()
     mod = model.fit(X_train, y_train)
     return mod
@@ -62,7 +67,7 @@ def predict_using_model(data: list, create_model, neighbors = None) -> int:
     else:
         return "No Diabetes"
 
-print(predict_using_model([1,42.0,0,0,4,33.64,4.8,145
-], create_KNN_model, neighbors=7))
-print(predict_using_model([1,42.0,0,0,4,33.64,4.8,145
-], create_Bayes_model))
+# print(predict_using_model([1,42.0,0,0,4,33.64,4.8,145
+# ], create_KNN_model, neighbors=7))
+# print(predict_using_model([1,42.0,0,0,4,33.64,4.8,145
+# ], create_Bayes_model))
