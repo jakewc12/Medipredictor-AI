@@ -17,7 +17,6 @@ def create_data_frame():
     df = pd.read_csv('disease-backend/diabetes.csv')
     df['gender'] = label_encoder.fit_transform(df['gender']) 
     df['smoking_history'] = label_encoder.fit_transform(df['smoking_history'])
-    cat_df = df.drop(columns=['diabetes'])
     X = df.drop(columns=['diabetes'])
     y = df.diabetes
     X_train, X_test, y_train, y_test = train_test_split(X,y,test_size=0.3,random_state=42)
