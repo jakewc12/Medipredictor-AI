@@ -1,5 +1,7 @@
 
 # import necessary libraries
+from sklearn.svm import SVC
+from sklearn.model_selection import GridSearchCV
 import numpy as np
 import pandas as pd
 import seaborn as sns
@@ -29,6 +31,7 @@ def create_KNN_model(neighbors: int) -> KNeighborsClassifier:
     Returns:
     KNeighborsClassifier: Produced model
     """
+    print("HEREEE")
     X_train, y_train = create_data_frame()
     knn = KNeighborsClassifier(n_neighbors = neighbors)
     knn.fit(X_train, y_train)
@@ -41,14 +44,37 @@ def create_Bayes_model(*args) -> GaussianNB:
     Returns:
     GaussianNB: Produced model
     """
+    print("HEREE")
     X_train, y_train = create_data_frame()
     model = GaussianNB()
     mod = model.fit(X_train, y_train)
     return mod
 
-def predict_using_model(data: list, create_model, neighbors = None) -> int:
+def create_SVM_model(*args) -> SVC:
     """
-    Summary or Description of the Function
+    Creates a SVM(Support Vector Machine) with specific parameterspredictive model using the given data
+
+    Returns:
+    SVC: Produced model(sklearn's implementation of SVM)
+    """
+    print("HERE")
+    X_train, y_train = create_data_frame()
+    svm = SVC()
+    params = {
+        'C': [46],
+        'kernel': ['rbf'],
+        'gamma': [.0005]
+    }
+    print("HERE")
+    svm_grid = GridSearchCV(svm, params, cv=5)
+    print("HERE")
+    svm_grid.fit(X_train, y_train)
+    print("HEREEEEE")
+    return svm_grid
+
+def predict_using_model(data: list, model, neighbors = None) -> int:
+    """
+    Predicts outcome of diabetes based on given model
 
     Parameters:
     data (list): all of the data points to use for the prediction
@@ -58,13 +84,26 @@ def predict_using_model(data: list, create_model, neighbors = None) -> int:
     Returns:
     int: Predicted outcome of diabetes, 1 for yes, 0 for no
     """
-    model = create_model(neighbors)
+    print("predicting")
     formatted_data = np.array([data]).reshape(1, -1)
     prediction = model.predict(formatted_data)
     if prediction[0] == 1:
         return "Diabetes"
     else:
         return "No Diabetes"
+    
+def predict_using_all_models(data: list) -> list:
+    results = {}
+    #, 'svm': create_SVM_model()
+    models = {'bayes': create_Bayes_model(), 'knn': create_KNN_model(7)}
+    print("MODELS")
+    print(models)
+    for model in models:
+        print("OKAY")
+        results[model] = predict_using_model(data, models[model])
+    print(results)
+    return results
+
 
 # print(predict_using_model([1,42.0,0,0,4,33.64,4.8,145
 # ], create_KNN_model, neighbors=7))

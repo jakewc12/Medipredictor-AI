@@ -14,22 +14,16 @@ import {
   } from 'react-awesome-button';
   import 'react-awesome-button/dist/styles.css';
 import { state } from '../../SubmitPopUp/SubmitPopUp';
-enum SmokingHistory {
-    undefined = 'undefined',
-    No_Info = "No_Info", 
-    Never = "Never",
-    Current = "Current",
-    Former = "Former",
-    Ever = "Ever",
-    Not_Current = "Not_Current"
-}
+import { SmokingHistory, SMOKING_OPTIONS, GENDER_OPTIONS, RESULTS } from './constants';
 
 interface Props {
     setIsPopupOpen: (open: boolean) => void;
     setIsSuccess : (success: state) => void;
     setMessage: (message: string) => void;
+    setResultMessage: (resultMessage: RESULTS[]) => void;
+    setIsResultPopupOpen: (open: boolean) => void
   }
-const DiabetesForm: React.FC<Props> = ({ setIsPopupOpen,  setIsSuccess, setMessage }) => {
+const DiabetesForm: React.FC<Props> = ({ setIsPopupOpen,  setIsSuccess, setMessage, setResultMessage, setIsResultPopupOpen }) => {
     
     const getData = () => {
         if (
@@ -67,16 +61,30 @@ const DiabetesForm: React.FC<Props> = ({ setIsPopupOpen,  setIsSuccess, setMessa
             }
         }).then(data => {
             console.log(data)
-            setResult(data.thing)
+            setResult(data.result)
+            const messageResult:RESULTS[] = []
+            Object.entries(data.result).forEach(([key, value]) => {
+                console.log("KEY")
+                console.log(key)
+                console.log("VALUE")
+                console.log(value)
+                const result: RESULTS={
+                    
+                    type: key.charAt(0).toUpperCase() + key.slice(1)+':',
+                    result: value as string
+                }
+                messageResult.push(result)
+            });
+            setResultMessage(messageResult)
+            
+            setIsResultPopupOpen(true)
             return(data)
         }).catch(error => {
             console.log(error)
         })
     };
     const [gender, setGender] = useState('')
-    useEffect(() => {
-        console.log("Gender updated to:", gender);
-      }, [gender]);
+    
     const [age, setAge] = useState<number>()
     const [hypertension, setHypertension] = useState<boolean>()
     const [heartDisease, setHeartDisease] = useState<boolean>()
@@ -84,7 +92,9 @@ const DiabetesForm: React.FC<Props> = ({ setIsPopupOpen,  setIsSuccess, setMessa
     const [HbA1c, setHbA1c] = useState<number>()
     const [bloodGluclose, setBloodGlucose] = useState<number>()
     const [BMI, setBMI] = useState<number>();
-
+    useEffect(() => {
+        console.log("smoking updated to:", smokingHistory);
+      }, [smokingHistory]);
     const [result, setResult] = useState(0)
     const handleCheckBoxChange = (func: (args:any) => void) => (event: React.ChangeEvent<HTMLInputElement>) => {
         func(event.target.checked)
@@ -99,23 +109,27 @@ const DiabetesForm: React.FC<Props> = ({ setIsPopupOpen,  setIsSuccess, setMessa
                 </FormQuestionContainer>
 
                 <FormQuestionContainer>
+                <FormLabel id="gender">Gender</FormLabel>
                     <FormRadioContainer>
                         <FormControl>
-                            <FormLabel id="gender">Gender</FormLabel>
-                            <RadioGroup
-                                aria-labelledby="gender"
-                                name="gender"
-                                onChange= {
-                                    (e) => {
+                            <FormTextContainer>
+                                <FormAnswerContainer>
+                                    <RadioGroup
+                                        aria-labelledby="gender"
+                                        name="gender"
+                                        onChange= {
+                                            (e) => {
                                         setGender(e.target.value)
-                                    }
-                                }
-                            >
-                                <FormControlLabel value="female" control={<Radio />} label="Female" />
-                                <FormControlLabel value="male" control={<Radio />} label="Male" />
-                            </RadioGroup>
+                                            }
+                                        }
+                                        >
+                                {GENDER_OPTIONS.map((menu)=>(<FormControlLabel value={menu.value} label={menu.label} control={<Radio/>}/>))}
+                                    </RadioGroup>
+                                </FormAnswerContainer>
+                            </FormTextContainer>
                         </FormControl>
                     </FormRadioContainer>
+                    
                 </FormQuestionContainer>
 
                 <FormQuestionContainer>
@@ -126,7 +140,7 @@ const DiabetesForm: React.FC<Props> = ({ setIsPopupOpen,  setIsSuccess, setMessa
                 component="legend">Age</FormLabel>
                 <FormHelperText>Age is an important factor as diabetes is more commonly diagnosed in older adults.</FormHelperText>
                     <FormTextContainer >
-                        <NumberInputBasic setNumber={setAge} number={age}></NumberInputBasic>
+                        <NumberInputBasic setNumber={setAge} number={age} name='age'></NumberInputBasic>
                     </FormTextContainer>
                 </FormQuestionContainer>
                 
@@ -184,12 +198,7 @@ const DiabetesForm: React.FC<Props> = ({ setIsPopupOpen,  setIsSuccess, setMessa
                                                 setSmokingHistory(e.target.value as SmokingHistory)
                                             }
                                         }>
-                                        <FormControlLabel value="No_Info" control={<Radio />} label="No Info" />
-                                        <FormControlLabel value="Never" control={<Radio />} label="Never" />
-                                        <FormControlLabel value="Current" control={<Radio />} label="Current" />
-                                        <FormControlLabel value="Former" control={<Radio />} label="Former" />
-                                        <FormControlLabel value="Ever" control={<Radio />} label="Ever" />
-                                        <FormControlLabel value="Not_Current" control={<Radio />} label="Not Current" />
+                                        {SMOKING_OPTIONS.map((menu)=> (<FormControlLabel value={menu.value} control={<Radio/>} label={menu.label}/>))}
                                     </RadioGroup>
                                 </FormAnswerContainer>
                             </FormControl>
@@ -205,7 +214,7 @@ const DiabetesForm: React.FC<Props> = ({ setIsPopupOpen,  setIsSuccess, setMessa
                         </InfoText>
                     <FormTextContainer>
                         
-                        <NumberInputBasic setNumber={setBMI} number={BMI}></NumberInputBasic>
+                        <NumberInputBasic setNumber={setBMI} number={BMI} name='BMI'></NumberInputBasic>
                     </FormTextContainer>
                 </FormQuestionContainer>
 
@@ -213,12 +222,12 @@ const DiabetesForm: React.FC<Props> = ({ setIsPopupOpen,  setIsSuccess, setMessa
                     <FormLabel>HbA1c</FormLabel>
                         <InfoText>
                             <FormHelperText>
-                            something abt HbA1c
+                            HbA1c (Hemoglobin A1c) level is a measure of a person's average blood sugar level over the past 2-3 months. 
                             </FormHelperText>
                         </InfoText>
                     <FormTextContainer>
                         
-                        <NumberInputBasic setNumber={setHbA1c} number={HbA1c}></NumberInputBasic>
+                        <NumberInputBasic setNumber={setHbA1c} number={HbA1c} name='HbA1c'></NumberInputBasic>
                     </FormTextContainer>
                 </FormQuestionContainer>
 
@@ -226,12 +235,12 @@ const DiabetesForm: React.FC<Props> = ({ setIsPopupOpen,  setIsSuccess, setMessa
                     <FormLabel>Glucose</FormLabel>
                         <InfoText>
                             <FormHelperText>
-                            smth abt glucose
+                            Blood glucose level refers to the amount of glucose in the bloodstream at a given time.
                             </FormHelperText>
                         </InfoText>
                     <FormTextContainer>
                         
-                        <NumberInputBasic setNumber={setBloodGlucose} number={bloodGluclose}></NumberInputBasic>
+                        <NumberInputBasic setNumber={setBloodGlucose} number={bloodGluclose} name='blood glucose'></NumberInputBasic>
                     </FormTextContainer>
                 </FormQuestionContainer>
 

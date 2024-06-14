@@ -9,7 +9,8 @@ import { styled } from '@mui/system';
 
 interface Props {
     setNumber: (input_number: number) => void,
-    number: number | undefined
+    number: number | undefined,
+    name: string
 }
 
 const NumberInput = React.forwardRef(function CustomNumberInput(
@@ -40,17 +41,18 @@ const NumberInput = React.forwardRef(function CustomNumberInput(
 
 
 
-const NumberInputBasic: React.FC<Props> = ({ setNumber, number }) => {
+const NumberInputBasic: React.FC<Props> = ({ setNumber, number, name }) => {
   const handleChange = ((val: number|null)=> {
     if(val !=null) {
       setNumber(val)
     }
   
   })
+  const message = `Input ${name}...`
   return (
     <NumberInput
-      aria-label="Input age..."
-      placeholder="Input age..."
+      aria-label= {message}
+      placeholder={message}
       value={number}
       onChange={(event, val) => handleChange(val)}
       min={0}

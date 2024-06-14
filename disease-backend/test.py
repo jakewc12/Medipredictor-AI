@@ -13,7 +13,7 @@ from sklearn.naive_bayes import GaussianNB
 import time
 from flask import Flask, jsonify, request
 
-from diabetes import create_Bayes_model, create_KNN_model, predict_using_model
+from diabetes import predict_using_all_models
 
 from flask_cors import CORS
 app = Flask(__name__)
@@ -37,12 +37,14 @@ def transform_smoking(smoking: str):
             return 0
         case "Current":
             return 1
-        case "Not_Current":
+        case "Ever":
             return 2
         case "Former":
             return 3
         case "Never":
             return 4
+        case "Not_Current":
+            return 5
         
 def transform_boolean_to_int(value: any):
     if str(value) == 'True':
@@ -53,14 +55,17 @@ def transform_boolean_to_int(value: any):
 def get_diabetes_result():
     data = request.get_json()
     inputs = data.get('formValues')
-    BMI = inputs.get('BMI')
+    age = inputs.get('age')
+    bmi = inputs.get('BMI')
     gender = transform_gender(inputs.get('gender'))
     smoking = transform_smoking(inputs.get('SmokingHistory'))
     hypertension = transform_boolean_to_int(inputs.get('hypertension'))
     heart_disease = transform_boolean_to_int(inputs.get('heartDisease'))
-    row = np.array([gender, inputs.get('age'), hypertension, heart_disease, smoking, inputs.get('BMI'), inputs.get('HbA1c'), inputs.get('bloodGluclose')]).reshape(1, -1)
-    result = predict_using_model(data=row, create_model=create_Bayes_model)
-    return jsonify(result)
+    HbA1c = inputs.get('HbA1c')
+    blood_glucose = inputs.get('bloodGluclose')
+    row = np.array([float(gender), float(age), float(hypertension), float(heart_disease), float(smoking), float(bmi), float(HbA1c), float(blood_glucose)]).reshape(1, -1)
+    result = predict_using_all_models(data=row)
+    return jsonify(result=result)
 
 if __name__ == '__main__':
     app.run(host='127.0.0.1', port=5000)
