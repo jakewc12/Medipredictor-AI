@@ -61,15 +61,9 @@ const DiabetesForm: React.FC<Props> = ({ setIsPopupOpen,  setIsSuccess, setMessa
             }
         }).then(data => {
             console.log(data)
-            setResult(data.result)
             const messageResult:RESULTS[] = []
             Object.entries(data.result).forEach(([key, value]) => {
-                console.log("KEY")
-                console.log(key)
-                console.log("VALUE")
-                console.log(value)
                 const result: RESULTS={
-                    
                     type: key.charAt(0).toUpperCase() + key.slice(1)+':',
                     result: value as string
                 }
@@ -95,7 +89,6 @@ const DiabetesForm: React.FC<Props> = ({ setIsPopupOpen,  setIsSuccess, setMessa
     useEffect(() => {
         console.log("smoking updated to:", smokingHistory);
       }, [smokingHistory]);
-    const [result, setResult] = useState(0)
     const handleCheckBoxChange = (func: (args:any) => void) => (event: React.ChangeEvent<HTMLInputElement>) => {
         func(event.target.checked)
     }
