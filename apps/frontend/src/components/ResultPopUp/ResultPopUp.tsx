@@ -21,7 +21,7 @@ const ResultPopUp: React.FC<Props> = ({ open, setOpen, message }) => {
       <Alert
       
         onClose={() => setOpen(false)}
-        severity='success'
+        severity='info'
         variant="filled"
         sx={{ width: '100%' }}
       >

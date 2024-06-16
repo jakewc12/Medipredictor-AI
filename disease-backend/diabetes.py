@@ -96,10 +96,8 @@ def predict_using_all_models(data: list) -> list:
     results = {}
     #, 'svm': create_SVM_model()
     models = {'bayes': create_Bayes_model(), 'knn': create_KNN_model(7)}
-    print("MODELS")
     print(models)
     for model in models:
-        print("OKAY")
         results[model] = predict_using_model(data, models[model])
     print(results)
     return results
