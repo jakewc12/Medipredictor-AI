@@ -18,9 +18,9 @@ const Home: React.FC = () => {
     }, []);
 
    return (
-   <div> This is home
-      The current time is {currentTime}
-   </div>
+   <a href='https://www.nih.gov/news-events/news-releases/nih-study-finds-interventions-prevent-type-2-diabetes-give-good-return-investment'> 
+      . About 7 million people have type 2 diabetes but do not know it. In addition, about 79 million adults have prediabetes, with high blood sugar levels that are not yet in the diabetic range.
+   </a>
    );
   };
   

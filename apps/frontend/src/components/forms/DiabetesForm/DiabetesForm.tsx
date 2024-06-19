@@ -13,7 +13,7 @@ import {
     AwesomeButton
   } from 'react-awesome-button';
   import 'react-awesome-button/dist/styles.css';
-import { state } from '../../SubmitPopUp/SubmitPopUp';
+import { state } from '../../PopUps/SubmitPopUp/SubmitPopUp';
 import { SmokingHistory, SMOKING_OPTIONS, GENDER_OPTIONS, RESULTS } from './constants';
 
 interface Props {
@@ -21,9 +21,10 @@ interface Props {
     setIsSuccess : (success: state) => void;
     setMessage: (message: string) => void;
     setResultMessage: (resultMessage: RESULTS[]) => void;
-    setIsResultPopupOpen: (open: boolean) => void
+    setIsResultPopupOpen: (open: boolean) => void;
+    setLoading: (loading: boolean) => void;
   }
-const DiabetesForm: React.FC<Props> = ({ setIsPopupOpen,  setIsSuccess, setMessage, setResultMessage, setIsResultPopupOpen }) => {
+const DiabetesForm: React.FC<Props> = ({ setIsPopupOpen,  setIsSuccess, setMessage, setResultMessage, setIsResultPopupOpen, setLoading }) => {
     
     const getData = () => {
         if (
@@ -47,6 +48,8 @@ const DiabetesForm: React.FC<Props> = ({ setIsPopupOpen,  setIsSuccess, setMessa
             bloodGluclose,
             BMI: BMI
         }
+        setLoading(true)
+        console.log("loading")
         fetch('http://localhost:5000/diabetes', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -57,9 +60,11 @@ const DiabetesForm: React.FC<Props> = ({ setIsPopupOpen,  setIsSuccess, setMessa
                 console.log('failed to fetch')
                 console.log(response)
             }else{
+                
                 return response.json()
             }
         }).then(data => {
+            //TODO: PUT LOADING BAR HERE BUT REMOVE ONCE setIsResultPopupOpen is set true
             console.log(data)
             const messageResult:RESULTS[] = []
             Object.entries(data.result).forEach(([key, value]) => {
@@ -69,9 +74,11 @@ const DiabetesForm: React.FC<Props> = ({ setIsPopupOpen,  setIsSuccess, setMessa
                 }
                 messageResult.push(result)
             });
+
+            setLoading(false)
             setResultMessage(messageResult)
-            
             setIsResultPopupOpen(true)
+
             return(data)
         }).catch(error => {
             console.log(error)
@@ -236,7 +243,6 @@ const DiabetesForm: React.FC<Props> = ({ setIsPopupOpen,  setIsSuccess, setMessa
                         <NumberInputBasic setNumber={setBloodGlucose} number={bloodGluclose} name='blood glucose'></NumberInputBasic>
                     </FormTextContainer>
                 </FormQuestionContainer>
-
                 <AwesomeButton type="primary" onPress={()=> {
                     const response = getData()
                     if (response === 2) {
@@ -247,6 +253,7 @@ const DiabetesForm: React.FC<Props> = ({ setIsPopupOpen,  setIsSuccess, setMessa
                         setIsSuccess(state.success)
                         setMessage("Form Successfully Submitted!")
                         console.log(response)
+                        window.location.href = 'http://localhost:4200/diabetes-resources'
                     }
                     setIsPopupOpen(true)
                 }}>Submit</AwesomeButton>

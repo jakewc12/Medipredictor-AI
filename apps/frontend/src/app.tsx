@@ -9,6 +9,7 @@ import Navbar from './components/Navbar';
 import { muiTheme } from './theme';
 import Heart from './pages/Heart';
 import Diabetes from './pages/Diabetes';
+import DiabetesResources from './pages/DiabetesResources';
 const App: React.FC = () => {
   
   return (
@@ -22,6 +23,7 @@ const App: React.FC = () => {
         <Route path="*" element={<NotFound />} />
         <Route path="heart" element={<Heart />} />
         <Route path="diabetes" element={<Diabetes />} />
+        <Route path="diabetes-resources" element={<DiabetesResources formValues={null}/>}/>
       </Routes>
     </MuiThemeProvider>
   );
