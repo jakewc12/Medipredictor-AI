@@ -16,6 +16,7 @@ import FormControl from '@mui/material/FormControl';
 import FormLabel from '@mui/material/FormLabel';
 import Checkbox from '@mui/material/Checkbox';
 import NumberInputBasic from '../DiabetesForm/NumberInputForm';
+import { FormAnswerContainer } from './styles';
 import { SEX_OPTIONS, RESULTS } from './constants';
 
 interface Props {
@@ -23,7 +24,7 @@ interface Props {
 }
 
 const HeartForm: React.FC<Props> = ({ setIsPopupOpen }) => {
-  const [age, setAge] = useState<number>(0);
+  const [age, setAge] = useState<number | undefined>(0);
   const [sex, setSex] = useState<string>('');
   const [cp, setCp] = useState<number | undefined>();
   const [trestbps, setTrestbps] = useState<number | undefined>();
@@ -60,7 +61,7 @@ const HeartForm: React.FC<Props> = ({ setIsPopupOpen }) => {
     thal,
   };
 
-  const getData = (inputs: string) => {
+  const getData = () => {
     if (
       age === undefined ||
       sex === '' ||
@@ -235,12 +236,13 @@ const HeartForm: React.FC<Props> = ({ setIsPopupOpen }) => {
       <AwesomeButton type="primary" onPress={()=> {
                   const response = getData()
                     if (response === 2) {
-                        setIsSuccess(state.error)
+                      console.log('empty fields')
+                        // setIsSuccess(state.error)
                         
-                        setMessage("Form Failed to Submit! Consider checking for empty fields")
+                        // setMessage("Form Failed to Submit! Consider checking for empty fields")
                     }else{
-                        setIsSuccess(state.success)
-                        setMessage("Form Successfully Submitted!")
+                        // setIsSuccess(state.success)
+                        // setMessage("Form Successfully Submitted!")
                         console.log(response)
                     }
                     setIsPopupOpen(true)
