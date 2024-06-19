@@ -1,68 +1,103 @@
-import { FormQuestionContainer, FormTextContainer, FormRadioContainer, HomeContainer } from './styles';
+import { FormQuestionContainer, FormTextContainer, FormRadioContainer, HomeContainer, FormAnswerContainer, InfoText, InfoHeader } from './styles';
 import { useState, useEffect } from 'react';
-//import { Radio } from '@mui/material';
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FormControl from '@mui/material/FormControl';
 import FormLabel from '@mui/material/FormLabel';
 import NumberInputBasic from './NumberInputForm';
-enum SmokingHistory {
-    No_Info, 
-    Never,
-    Current,
-    Former,
-    Ever,
-    Not_Current
-}
+import { pink } from '@mui/material/colors';
+import Checkbox from '@mui/material/Checkbox';
+import { FormGroup, FormHelperText } from '@mui/material';
+import {
+    AwesomeButton
+  } from 'react-awesome-button';
+  import 'react-awesome-button/dist/styles.css';
+import { state } from '../../PopUps/SubmitPopUp/SubmitPopUp';
+import { SmokingHistory, SMOKING_OPTIONS, GENDER_OPTIONS, RESULTS } from './constants';
 
 interface Props {
     setIsPopupOpen: (open: boolean) => void;
+    setIsSuccess : (success: state) => void;
+    setMessage: (message: string) => void;
+    setResultMessage: (resultMessage: RESULTS[]) => void;
+    setIsResultPopupOpen: (open: boolean) => void;
+    setLoading: (loading: boolean) => void;
   }
-const DiabetesForm: React.FC<Props> = ({ setIsPopupOpen }) => {
+const DiabetesForm: React.FC<Props> = ({ setIsPopupOpen,  setIsSuccess, setMessage, setResultMessage, setIsResultPopupOpen, setLoading }) => {
     
-    const getData = (inputs: string ) => {
+    const getData = () => {
+        if (
+            gender === '' ||
+            age === undefined ||
+            smokingHistory === SmokingHistory.undefined ||
+            HbA1c === undefined ||
+            bloodGluclose === undefined ||
+            BMI === undefined
+        ){
+            return 2
+        }
+
+        const formValues = {
+            gender,
+            age,
+            hypertension,
+            heartDisease,
+            SmokingHistory: SmokingHistory[smokingHistory],
+            HbA1c,
+            bloodGluclose,
+            BMI: BMI
+        }
+        setLoading(true)
+        console.log("loading")
         fetch('http://localhost:5000/diabetes', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({inputs}),
+            body: JSON.stringify({formValues}),
         })
         .then(response => {
             if(!response.ok){
                 console.log('failed to fetch')
                 console.log(response)
             }else{
+                
                 return response.json()
             }
         }).then(data => {
+            //TODO: PUT LOADING BAR HERE BUT REMOVE ONCE setIsResultPopupOpen is set true
             console.log(data)
-            setTest(data.thing)
+            const messageResult:RESULTS[] = []
+            Object.entries(data.result).forEach(([key, value]) => {
+                const result: RESULTS={
+                    type: key.charAt(0).toUpperCase() + key.slice(1)+':',
+                    result: value as string
+                }
+                messageResult.push(result)
+            });
+
+            setLoading(false)
+            setResultMessage(messageResult)
+            setIsResultPopupOpen(true)
+
+            return(data)
         }).catch(error => {
             console.log(error)
         })
     };
-    const handleClick = () => {
-        getData(thing)
-    }
     const [gender, setGender] = useState('')
-    useEffect(() => {
-        console.log("Gender updated to:", gender);
-      }, [gender]);
-    const [age, setAge] = useState(0)
-    const [hypertension, setHypertension] = useState(false)
-    const [heartDisease, setHeartDisease] = useState(false)
-    const [smokingHistory, setSmokingHistory] = useState<SmokingHistory>(SmokingHistory.No_Info)
+    
+    const [age, setAge] = useState<number>()
+    const [hypertension, setHypertension] = useState<boolean>()
+    const [heartDisease, setHeartDisease] = useState<boolean>()
+    const [smokingHistory, setSmokingHistory] = useState<SmokingHistory>(SmokingHistory.undefined)
     const [HbA1c, setHbA1c] = useState<number>()
     const [bloodGluclose, setBloodGlucose] = useState<number>()
     const [BMI, setBMI] = useState<number>();
-
-    const [thing, setThing] = useState('')
-    const [test, setTest] = useState('hehe')
-
-    const handleAgeChange = (value:number | null) => {
-        if (value != null) {
-            setAge(value)
-        }
+    useEffect(() => {
+        console.log("smoking updated to:", smokingHistory);
+      }, [smokingHistory]);
+    const handleCheckBoxChange = (func: (args:any) => void) => (event: React.ChangeEvent<HTMLInputElement>) => {
+        func(event.target.checked)
     }
     
     return (
@@ -74,38 +109,156 @@ const DiabetesForm: React.FC<Props> = ({ setIsPopupOpen }) => {
                 </FormQuestionContainer>
 
                 <FormQuestionContainer>
+                <FormLabel id="gender">Gender</FormLabel>
                     <FormRadioContainer>
                         <FormControl>
-                            <FormLabel id="gender">Gender</FormLabel>
-                            <RadioGroup
-                                aria-labelledby="gender"
-                                name="gender"
-                                onChange= {
-                                    (e) => {
+                            <FormTextContainer>
+                                <FormAnswerContainer>
+                                    <RadioGroup
+                                        aria-labelledby="gender"
+                                        name="gender"
+                                        onChange= {
+                                            (e) => {
                                         setGender(e.target.value)
-                                    }
-                                }
-                            >
-                                <FormControlLabel value="female" control={<Radio />} label="Female" />
-                                <FormControlLabel value="male" control={<Radio />} label="Male" />
-                            </RadioGroup>
+                                            }
+                                        }
+                                        >
+                                {GENDER_OPTIONS.map((menu)=>(<FormControlLabel value={menu.value} label={menu.label} control={<Radio/>}/>))}
+                                    </RadioGroup>
+                                </FormAnswerContainer>
+                            </FormTextContainer>
                         </FormControl>
                     </FormRadioContainer>
+                    
                 </FormQuestionContainer>
 
                 <FormQuestionContainer>
+                <FormLabel 
+                style={{
+                    paddingTop:'2%'
+                }}
+                component="legend">Age</FormLabel>
+                <FormHelperText>Age is an important factor as diabetes is more commonly diagnosed in older adults.</FormHelperText>
                     <FormTextContainer >
-                        <NumberInputBasic setNumber={setAge} number={age}></NumberInputBasic>
+                        <NumberInputBasic setNumber={setAge} number={age} name='age'></NumberInputBasic>
+                    </FormTextContainer>
+                </FormQuestionContainer>
+                
+                <FormQuestionContainer>
+                    <FormLabel component={'legend'}>Relevant Health Conditions</FormLabel>
+                    <InfoText>
+                        <FormHelperText>Hypertension is a medical condition in which the blood pressure in the arteries is persistently elevated.</FormHelperText>
+                        <FormHelperText>Heart disease is another medical condition that is associated with an increased risk of developing diabetes.</FormHelperText>
+                    </InfoText>
+                    <FormTextContainer>
+                    
+                        <FormAnswerContainer>
+                            <FormGroup>
+                                <FormControlLabel
+                                    label='Hypertension'
+                                    control={<Checkbox
+                                    checked= { hypertension}
+                                    onChange={handleCheckBoxChange(setHypertension)}  
+                                    sx={{
+                                    color: pink[800],
+                                    '&.Mui-checked': {
+                                        color: pink[600],
+                                    },
+                                    }}
+                                    />}
+                                    labelPlacement='start'
+                                    />
+                                <FormControlLabel
+                                    label='Heart Disease'
+                                    control={<Checkbox
+                                    checked= { heartDisease}
+                                    onChange={handleCheckBoxChange(setHeartDisease)}  
+                                />}
+                                labelPlacement='start'
+                                />
+                                </FormGroup>
+                            </FormAnswerContainer>
                     </FormTextContainer>
                 </FormQuestionContainer>
 
+                <FormQuestionContainer>
+                <FormLabel component={'legend'}>Smoking History</FormLabel>
+                            <InfoText>
+                                <FormHelperText>Smoking history is also considered a risk factor for diabetes and can exacerbate the complications associated</FormHelperText>
+                            </InfoText>
+                    <FormTextContainer>
+                        <FormControl>
+                            
+                                <FormAnswerContainer>
+                                    <RadioGroup
+                                        aria-labelledby="smoking-history"
+                                        name="smoking"
+                                        onChange= {
+                                            (e) => {
+                                                setSmokingHistory(e.target.value as SmokingHistory)
+                                            }
+                                        }>
+                                        {SMOKING_OPTIONS.map((menu)=> (<FormControlLabel value={menu.value} control={<Radio/>} label={menu.label}/>))}
+                                    </RadioGroup>
+                                </FormAnswerContainer>
+                            </FormControl>
+                        </FormTextContainer>
+                    </FormQuestionContainer>
 
+                <FormQuestionContainer>
+                    <FormLabel>BMI</FormLabel>
+                        <InfoText>
+                            <FormHelperText>
+                            BMI (Body Mass Index) is a measure of body fat based on weight and height. Higher BMI values are linked to a higher risk
+                            </FormHelperText>
+                        </InfoText>
+                    <FormTextContainer>
+                        
+                        <NumberInputBasic setNumber={setBMI} number={BMI} name='BMI'></NumberInputBasic>
+                    </FormTextContainer>
+                </FormQuestionContainer>
 
+                <FormQuestionContainer>
+                    <FormLabel>HbA1c</FormLabel>
+                        <InfoText>
+                            <FormHelperText>
+                            HbA1c (Hemoglobin A1c) level is a measure of a person's average blood sugar level over the past 2-3 months. 
+                            </FormHelperText>
+                        </InfoText>
+                    <FormTextContainer>
+                        
+                        <NumberInputBasic setNumber={setHbA1c} number={HbA1c} name='HbA1c'></NumberInputBasic>
+                    </FormTextContainer>
+                </FormQuestionContainer>
+
+                <FormQuestionContainer>
+                    <FormLabel>Glucose</FormLabel>
+                        <InfoText>
+                            <FormHelperText>
+                            Blood glucose level refers to the amount of glucose in the bloodstream at a given time.
+                            </FormHelperText>
+                        </InfoText>
+                    <FormTextContainer>
+                        
+                        <NumberInputBasic setNumber={setBloodGlucose} number={bloodGluclose} name='blood glucose'></NumberInputBasic>
+                    </FormTextContainer>
+                </FormQuestionContainer>
+                <AwesomeButton type="primary" onPress={()=> {
+                    const response = getData()
+                    if (response === 2) {
+                        setIsSuccess(state.error)
+                        
+                        setMessage("Form Failed to Submit! Consider checking for empty fields")
+                    }else{
+                        setIsSuccess(state.success)
+                        setMessage("Form Successfully Submitted!")
+                        console.log(response)
+                        window.location.href = 'http://localhost:4200/diabetes-resources'
+                    }
+                    setIsPopupOpen(true)
+                }}>Submit</AwesomeButton>
             </HomeContainer>
-    
-    
-) ; 
-
+    ) ; 
 }
 export default DiabetesForm
 

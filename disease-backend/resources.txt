@@ -1,0 +1,45 @@
+{link: quote}
+https://diabetes.org/
+https://www.niddk.nih.gov/about-niddk/research-areas/diabetes
+
+
+Difference between type 1 and type 2:
+    {
+        'https://www.niddk.nih.gov/about-niddk/research-areas/diabetes' :
+        {
+            'Type 1 diabetes affects approximately 6 percent of adults and the majority of children and youth with diagnosed diabetes.',
+            'Type 2 diabetes is the most common form of the disease, accounting for about 90 to 94 percent of diagnosed diabetes cases in U.S. adults. Type 2 diabetes is also increasingly being diagnosed in children and adolescents, and disproportionately affects individuals from racial and ethnic minority populations.'
+        }
+        
+    }
+
+All isn't lost!:
+    {
+        'https://www.nih.gov/news-events/news-releases/bariatric-surgery-provides-long-term-blood-glucose-control-type-2-diabetes-remission' :
+        {
+            'bariatric surgery typically results in greater weight loss that affects a person’s metabolic hormones, which improves the body’s response to insulin and ability to maintain healthy blood glucose levels',
+            'More participants with surgery achieved diabetes remission compared to participants in the medication/lifestyle group, and the percent of participants using medications to treat diabetes in the surgery group decreased from 98% to 61%, yet remained largely unchanged in the medication/lifestyle group.'
+        }
+    }
+    {
+        'https://www.nih.gov/news-events/news-releases/nih-study-finds-interventions-prevent-type-2-diabetes-give-good-return-investment',
+        {
+            'The economic analysis of the DPP/DPPOS found that metformin treatment led to a small savings in health care costs over 10 years, compared with placebo. 
+            (At present, metformin, an oral drug used to treat type 2 diabetes, is not approved by the Food and Drug Administration for diabetes prevention.) 
+            The lifestyle intervention as applied in the study was cost-effective, or justified by the benefits of diabetes prevention and improved health over 10 years, compared with placebo.'
+        }
+    }
+
+How to prevent completely:
+    {
+        'https://www.niddk.nih.gov/about-niddk/research-areas/diabetes/diabetes-prevention-program-dpp',
+        {
+            'To date, the DPPOS has shown that participants who took part in the DPP Lifestyle Change Program or are taking metformin continue to prevent or delay type 2 diabetes for at least 15 years.',
+            'Metformin was effective for all participating racial and ethnic groups and both men and women. Metformin was most effective in women with a history of gestational diabetes, in people between the ages of 25 and 44, and in people with obesity who had a body mass index of 35 or higher.'
+        }
+    }
+
+
+
+
+
