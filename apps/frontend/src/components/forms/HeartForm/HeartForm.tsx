@@ -19,11 +19,21 @@ import NumberInputBasic from '../DiabetesForm/NumberInputForm';
 import { FormAnswerContainer } from './styles';
 import { SEX_OPTIONS, RESULTS } from './constants';
 
-interface Props {
-  setIsPopupOpen: (open: boolean) => void;
+export enum state {
+  success = "success",
+  error = "error"
 }
 
-const HeartForm: React.FC<Props> = ({ setIsPopupOpen }) => {
+interface Props {
+  setIsPopupOpen: (open: boolean) => void;
+  setIsSuccess : (success: state) => void;
+  setMessage: (message: string) => void;
+  setResultMessage: (resultMessage: RESULTS[]) => void;
+  setIsResultPopupOpen: (open: boolean) => void;
+  setLoading: (loading: boolean) => void;
+}
+
+const HeartForm: React.FC<Props> = ({ setIsPopupOpen,  setIsSuccess, setMessage, setResultMessage, setIsResultPopupOpen, setLoading }) => {
   const [age, setAge] = useState<number | undefined>(0);
   const [sex, setSex] = useState<string>('');
   const [cp, setCp] = useState<number | undefined>();
@@ -37,9 +47,6 @@ const HeartForm: React.FC<Props> = ({ setIsPopupOpen }) => {
   const [slope, setSlope] = useState<number | undefined>();
   const [ca, setCa] = useState<number | undefined>();
   const [thal, setThal] = useState<number | undefined>();
-
-  const [resultMessage, setResultMessage] = useState<RESULTS[]>([]);
-  const [isResultPopupOpen, setIsResultPopupOpen] = useState<boolean>(false);
 
   useEffect(() => {
     console.log("Sex updated to:", sex);
