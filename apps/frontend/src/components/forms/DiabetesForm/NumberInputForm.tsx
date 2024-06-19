@@ -10,7 +10,7 @@ import { styled } from '@mui/system';
 interface Props {
     setNumber: (input_number: number) => void,
     number: number | undefined,
-    name: string
+      name: string,
 }
 
 const NumberInput = React.forwardRef(function CustomNumberInput(
