@@ -93,7 +93,7 @@ def get_heart_result():
     row = np.array([float(sex), float(age), float(cp), float(trestbps), 
                     float(chol), float(fbs), float(restecg), float(thalach), 
                     float(exang), float(oldpeak), float(slope), float(ca), 
-                    float(thal)])
+                    float(thal)]).reshape(1, -1)
     result = predict_using_all_models(data=row)
     return jsonify(result=result)
 
