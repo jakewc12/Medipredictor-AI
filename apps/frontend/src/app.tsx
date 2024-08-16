@@ -10,13 +10,17 @@ import { muiTheme } from './theme';
 import Heart from './pages/Heart';
 import Diabetes from './pages/Diabetes';
 import DiabetesResources from './pages/DiabetesResources';
+import NewNavbar from './components/Navbar/NewNavbar';
+import 'flowbite/dist/flowbite.css';
+
+
 const App: React.FC = () => {
   
   return (
     <MuiThemeProvider theme={muiTheme}>
       <CssBaseline />
-      <Navbar />
-
+      
+      <NewNavbar/>
       <Routes>
         <Route index element={<Home />} />
         <Route path="contact" element={<Contact />} />

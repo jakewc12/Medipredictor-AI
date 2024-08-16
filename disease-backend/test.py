@@ -13,7 +13,7 @@ from sklearn.naive_bayes import GaussianNB
 import time
 from flask import Flask, jsonify, request
 
-from diabetes import predict_using_all_models
+from diabetes import predict_using_all_models, scrape_resources
 
 from flask_cors import CORS
 app = Flask(__name__)
@@ -51,7 +51,7 @@ def transform_boolean_to_int(value: any):
         return 1
     return 0
         
-@app.route('/diabetes', methods=[ 'POST'])
+@app.route('/diabetes', methods=['POST', 'GET'])
 def get_diabetes_result():
     data = request.get_json()
     inputs = data.get('formValues')
@@ -65,7 +65,19 @@ def get_diabetes_result():
     blood_glucose = inputs.get('bloodGluclose')
     row = np.array([float(gender), float(age), float(hypertension), float(heart_disease), float(smoking), float(bmi), float(HbA1c), float(blood_glucose)]).reshape(1, -1)
     result = predict_using_all_models(data=row)
+    file = open('result.txt', 'w')
+    
+    file.write(stringify(result))
+    print("wrote to file")
     return jsonify(result=result)
 
+@app.route('/diabetes-resources', methods=[ 'GET'])
+def get_diabetes_resources(): 
+    results = scrape_resources()
+    return jsonify(results)
+
+def stringify(dictionary: dict):
+    string = ''.join([(value + ": " + dictionary[value] + "\n") for value in dictionary])
+    return string
 if __name__ == '__main__':
     app.run(host='127.0.0.1', port=5000)

@@ -10,10 +10,13 @@
   "private": true,
   "dependencies": {
     "@chakra-ui/react": "^2.8.2",
+    "@coreui/react": "^5.1.0",
     "@emotion/react": "^11.11.4",
     "@emotion/styled": "^11.11.5",
     "@mui/material": "^5.15.15",
     "cors": "^2.8.5",
+    "flowbite": "^2.4.1",
+    "flowbite-react": "^0.10.1",
     "framer-motion": "^11.2.10",
     "react": "18.2.0",
     "react-awesome-button": "^7.0.5",

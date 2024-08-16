@@ -36,6 +36,7 @@ const Diabetes: React.FC = () => {
                 setResultMessage = {setResultMessage}
                 setIsResultPopupOpen = {setIsResultPopupOpen}
                 setLoading = {setLoading}
+                isLoading = {loading}
             />
             <SubmitPopUp 
             open={isPopupOpen} 

@@ -1,0 +1,3 @@
+bayes: No Diabetes
+knn: No Diabetes
+svm: Diabetes

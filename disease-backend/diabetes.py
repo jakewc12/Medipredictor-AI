@@ -1,5 +1,7 @@
 
 # import necessary libraries
+import requests
+from bs4 import BeautifulSoup
 from sklearn.svm import SVC
 from sklearn.model_selection import GridSearchCV
 import numpy as np
@@ -13,6 +15,7 @@ from sklearn.neighbors import KNeighborsClassifier
 from sklearn.metrics import classification_report, accuracy_score, confusion_matrix, recall_score, ConfusionMatrixDisplay, precision_score
 from sklearn.model_selection import train_test_split
 from sklearn.naive_bayes import GaussianNB
+import dotenv
 
 
 def create_data_frame():
@@ -95,15 +98,34 @@ def predict_using_model(data: list, model, neighbors = None) -> int:
 def predict_using_all_models(data: list) -> list:
     results = {}
     #, 'svm': create_SVM_model()
-    models = {'bayes': create_Bayes_model(), 'knn': create_KNN_model(7)}
-    print(models)
+    models = {'bayes': create_Bayes_model(), 'knn': create_KNN_model(7), 'svm': create_SVM_model()}
     for model in models:
         results[model] = predict_using_model(data, models[model])
     print(results)
     return results
 
+def scrape_resources():
+    """
+    A simple web-scraping script that looks for articles related to Diabetes on the NIH webpage.
 
-# print(predict_using_model([1,42.0,0,0,4,33.64,4.8,145
-# ], create_KNN_model, neighbors=7))
-# print(predict_using_model([1,42.0,0,0,4,33.64,4.8,145
-# ], create_Bayes_model))
+    Returns:
+    dict: dictionary where the key is the url of the article and the value is a list of headline/date of the article.
+    """
+    url = 'https://www.niddk.nih.gov/news'
+
+    response = requests.get(url)
+
+    soup = BeautifulSoup(response.content, 'html.parser')
+
+    gpg = soup.find_all(class_ = 'sc-slider sc-news')
+
+    new_soup = BeautifulSoup(str(gpg), 'html.parser')
+
+    results = new_soup.find_all(lambda tag: 'sc-card' in tag.get('class', []))
+    result = {}
+    for thing in results:
+        current_soup = BeautifulSoup(str(thing), 'html.parser')
+        current_result = current_soup.find(lambda tag: tag.name == "a").get("href")
+        current_text = current_soup.get_text().strip().split('\r\n                            \n\n')
+        result[current_result] = current_text
+    return result

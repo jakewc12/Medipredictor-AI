@@ -8,6 +8,7 @@ import FormLabel from '@mui/material/FormLabel';
 import NumberInputBasic from './NumberInputForm';
 import { pink } from '@mui/material/colors';
 import Checkbox from '@mui/material/Checkbox';
+
 import { FormGroup, FormHelperText } from '@mui/material';
 import {
     AwesomeButton
@@ -23,10 +24,12 @@ interface Props {
     setResultMessage: (resultMessage: RESULTS[]) => void;
     setIsResultPopupOpen: (open: boolean) => void;
     setLoading: (loading: boolean) => void;
+    isLoading: boolean
   }
-const DiabetesForm: React.FC<Props> = ({ setIsPopupOpen,  setIsSuccess, setMessage, setResultMessage, setIsResultPopupOpen, setLoading }) => {
+const DiabetesForm: React.FC<Props> = ({ setIsPopupOpen,  setIsSuccess, setMessage, setResultMessage, setIsResultPopupOpen, setLoading, isLoading }) => {
     
-    const getData = () => {
+    const getData = async () => {
+        try {
         if (
             gender === '' ||
             age === undefined ||
@@ -37,7 +40,7 @@ const DiabetesForm: React.FC<Props> = ({ setIsPopupOpen,  setIsSuccess, setMessa
         ){
             return 2
         }
-
+        
         const formValues = {
             gender,
             age,
@@ -49,40 +52,35 @@ const DiabetesForm: React.FC<Props> = ({ setIsPopupOpen,  setIsSuccess, setMessa
             BMI: BMI
         }
         setLoading(true)
-        console.log("loading")
-        fetch('http://localhost:5000/diabetes', {
+        
+        const response = await fetch('http://localhost:5000/diabetes', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({formValues}),
-        })
-        .then(response => {
-            if(!response.ok){
-                console.log('failed to fetch')
-                console.log(response)
-            }else{
-                
-                return response.json()
-            }
-        }).then(data => {
-            //TODO: PUT LOADING BAR HERE BUT REMOVE ONCE setIsResultPopupOpen is set true
-            console.log(data)
+        });
+        if(!response.ok){
+            console.log('failed to fetch')
+            console.log(response)
+        }else{
+            const data = await response.json()
             const messageResult:RESULTS[] = []
-            Object.entries(data.result).forEach(([key, value]) => {
-                const result: RESULTS={
-                    type: key.charAt(0).toUpperCase() + key.slice(1)+':',
-                    result: value as string
-                }
-                messageResult.push(result)
-            });
-
-            setLoading(false)
-            setResultMessage(messageResult)
-            setIsResultPopupOpen(true)
-
-            return(data)
-        }).catch(error => {
-            console.log(error)
-        })
+        Object.entries(data.result).forEach(([key, value]) => {
+            const result: RESULTS={
+                type: key.charAt(0).toUpperCase() + key.slice(1)+':',
+                result: value as string
+            }
+            messageResult.push(result)
+        });
+        setLoading(false)
+        setResultMessage(messageResult)
+        setIsResultPopupOpen(true)
+        console.log(data)
+        return(1)
+        }
+    }catch(error) {
+        console.log(error)
+        return error
+    }
     };
     const [gender, setGender] = useState('')
     
@@ -244,21 +242,27 @@ const DiabetesForm: React.FC<Props> = ({ setIsPopupOpen,  setIsSuccess, setMessa
                     </FormTextContainer>
                 </FormQuestionContainer>
                 <AwesomeButton type="primary" onPress={()=> {
-                    const response = getData()
-                    if (response === 2) {
-                        setIsSuccess(state.error)
-                        
-                        setMessage("Form Failed to Submit! Consider checking for empty fields")
-                    }else{
-                        setIsSuccess(state.success)
-                        setMessage("Form Successfully Submitted!")
-                        console.log(response)
-                        window.location.href = 'http://localhost:4200/diabetes-resources'
-                    }
-                    setIsPopupOpen(true)
+                    awaitData()
                 }}>Submit</AwesomeButton>
             </HomeContainer>
     ) ; 
+    async function awaitData() {
+        setIsSuccess(state.success)
+        setMessage("Form Successfully Submitted!")
+        setIsPopupOpen(true)
+
+        const response = await getData()
+        
+        if (response === 2) {
+            setIsSuccess(state.error)
+            setMessage("Form Failed to Submit! Consider checking for empty fields")
+        }
+        console.log(response)
+        console.log(isLoading)
+        window.location.assign('http://localhost:4200/diabetes-resources');
+        
+    }
 }
+
 export default DiabetesForm
 

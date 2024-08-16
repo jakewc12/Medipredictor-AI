@@ -3,6 +3,9 @@ import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import AppBar from '@mui/material/AppBar';
 import Image from './unnamed.jpg'
+
+
+
 export const StyledToolbar = styled(Toolbar)(() => ({
   display: 'flex',
 }));
